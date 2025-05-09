@@ -45,6 +45,9 @@
 #define CONFIG_AT_SOCKET_MAX_CONN_NUM       1
 #endif
 
+
+#include "cosv.h"
+
 #ifdef CONFIG_AT_WIFI_COMMAND_SUPPORT
 esp_err_t at_wifi_init(void)
 {
@@ -269,6 +272,10 @@ void app_main(void)
         printf("regist rainmaker cmd fail\r\n");
     }
 #endif
+
+    if (esp_at_cosv_cmd_register() == false) {
+        printf("regist cosv cmd fail\r\n");
+    }
 
     at_custom_init();
 }

@@ -135,6 +135,35 @@ static bool s_esp_at_ota_started = false;
 static uint8_t *s_http_buffer = NULL;
 static int s_http_buffer_offset = 0;
 
+static char g_ota_server[64] = {};
+static int32_t g_ota_port = 0;
+
+#ifdef CONFIG_AT_OTA_SERVER_IP
+#undef CONFIG_AT_OTA_SERVER_IP
+#endif
+
+#ifdef CONFIG_AT_OTA_SERVER_PORT
+#undef CONFIG_AT_OTA_SERVER_PORT
+#endif
+
+// Redefine the defines
+#define CONFIG_AT_OTA_SERVER_IP   g_ota_server
+#define CONFIG_AT_OTA_SERVER_PORT g_ota_port
+
+void esp_at_set_ota_server(const char *server, int32_t port)
+{
+    size_t _server_len = strlen(server);
+
+    if (server == NULL || _server_len >= sizeof(g_ota_server)) {
+        return;
+    }
+
+    strncpy(g_ota_server, server, _server_len);
+	g_ota_server[_server_len - 1] = '\0';
+	
+    g_ota_port = port;
+}
+
 static void esp_at_set_upgrade_state(esp_at_ota_state_t status)
 {
     s_ota_status = status;
